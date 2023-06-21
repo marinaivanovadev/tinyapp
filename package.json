@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/marinaivanovadev/tinyapp/issues"
   },
-  "homepage": "https://github.com/marinaivanovadev/tinyapp#readme"
+  "homepage": "https://github.com/marinaivanovadev/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
