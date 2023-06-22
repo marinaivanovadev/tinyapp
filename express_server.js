@@ -10,6 +10,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.use(express.urlencoded({ extended: true})); // To make this data readable will translate, or parse the body
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
