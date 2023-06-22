@@ -3,6 +3,17 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 
+const generateRandomString = function() {
+  let characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let shortUrl = '';
+
+  for (let i = 0; i < 6; i++) {
+    let randomString = Math.floor(Math.random() * characters.length);
+    shortUrl += characters[randomString];
+  }
+  return shortUrl;
+};
+
 app.set("view engine", "ejs"); // for Use templating engine
 
 const urlDatabase = {
