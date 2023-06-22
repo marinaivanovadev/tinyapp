@@ -17,6 +17,11 @@ app.get("/", (req, res) => {
 app.get("/urls.json", (req,res) => { // add routes
   res.json(urlDatabase);
 });
+// add a route for urls
+app.get("/urls", (req, res) => {
+  const templateVars  = { urls: urlDatabase };
+  res.render("urls_index", templateVars);
+})
 
 app.get("/hello", (req, res) => {
   res.send("<html> <body>Hello <b>World</b></body></html>\n"); // sending html
