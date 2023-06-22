@@ -21,7 +21,14 @@ app.get("/urls.json", (req,res) => { // add routes
 app.get("/urls", (req, res) => {
   const templateVars  = { urls: urlDatabase };
   res.render("urls_index", templateVars);
-})
+});
+// add a second route and template
+app.get("/urls/:id", (req, res) => {
+  const id = req.params.id;
+  const longURL = urlDatabase[id];
+  const templateVars = { id, longURL};
+  res.render("urls_show", templateVars);
+});
 
 app.get("/hello", (req, res) => {
   res.send("<html> <body>Hello <b>World</b></body></html>\n"); // sending html
