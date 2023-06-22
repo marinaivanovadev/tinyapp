@@ -43,6 +43,12 @@ app.get("/hello", (req, res) => {
   res.send("<html> <body>Hello <b>World</b></body></html>\n"); // sending html
 });
 
+
+app.post("/urls", (req, res) => {
+  console.log(req.body); // Log the POST request body to the console
+  res.send("Ok"); // Respond with OK
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
