@@ -22,6 +22,13 @@ app.get("/urls", (req, res) => {
   const templateVars  = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
+
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+
+
+
 // add a second route and template
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
