@@ -43,6 +43,8 @@ app.get("/urls/new", (req, res) => {
 app.get("/u/:id", (req, res) => {
   const shortUrl = req.params.id; // extract short url from request
   const longURL = urlDatabase[shortUrl]; // get the long url 
+
+  
 // edge in short url not exist
   if (longURL) {
     res.redirect(longURL);
@@ -72,6 +74,12 @@ app.post("/urls", (req, res) => {
   const longURL = req.body.longURL; // get the long url from request
   urlDatabase[shortUrl] = longURL; // save the key-value pair to urlDatabase
   res.redirect(`/urls/${shortUrl}`);// redirect to a new page with new shortURL
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  const id = req.params.id;
+  delete urlDatabase[id];
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
