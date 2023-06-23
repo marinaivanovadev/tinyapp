@@ -50,12 +50,19 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+
+
 app.get("/hello", (req, res) => {
   res.send("<html> <body>Hello <b>World</b></body></html>\n"); // sending html
 });
 
 
 app.post("/urls", (req, res) => {
+  const shortUrl = generateRandomString(); //generate the random short  URL
+  const longURL = req.body.longURL; // get the long url from request
+  urlDatabase[shortUrl] = longURL; // save the key-value pair to urlDatabase
+  
+
   console.log(req.body); // Log the POST request body to the console
   res.send("Ok"); // Respond with OK
 });
