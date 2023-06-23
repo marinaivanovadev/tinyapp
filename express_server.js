@@ -67,9 +67,6 @@ app.post("/urls", (req, res) => {
   const longURL = req.body.longURL; // get the long url from request
   urlDatabase[shortUrl] = longURL; // save the key-value pair to urlDatabase
   res.redirect(`/urls/${shortUrl}`);// redirect to a new page with new shortURL
-
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Go to the new page"); // Respond with OK
 });
 
 app.listen(PORT, () => {
