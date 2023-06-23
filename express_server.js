@@ -40,6 +40,11 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+app.get("/u/:id", (req, res) => {
+  const shortUrl = req.params.id; // extract short url from request
+  const longURL = urlDatabase[shortUrl]; // get the long url 
+  res.redirect(longURL);
+});
 
 
 // add a second route and template
