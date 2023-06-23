@@ -43,7 +43,12 @@ app.get("/urls/new", (req, res) => {
 app.get("/u/:id", (req, res) => {
   const shortUrl = req.params.id; // extract short url from request
   const longURL = urlDatabase[shortUrl]; // get the long url 
-  res.redirect(longURL);
+// edge in short url not exist
+  if (longURL) {
+    res.redirect(longURL);
+  } else {
+    res.status(404).send("Short URL not found");
+}
 });
 
 
