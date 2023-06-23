@@ -75,7 +75,13 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortUrl] = longURL; // save the key-value pair to urlDatabase
   res.redirect(`/urls/${shortUrl}`);// redirect to a new page with new shortURL
 });
-
+app.post("/urls/:id/edit", (req, res) => { // post updated URL
+  
+  const id = req.params.id;
+  const newlongURL = req.body.longURL; // get the updated Url from body
+  urlDatabase[id] = newlongURL;
+  res.redirect("/urls");
+});
 
 
 app.post("/urls/:id/delete", (req, res) => {
