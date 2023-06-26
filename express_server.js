@@ -104,7 +104,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const userID = generateRandomString(); //generate the random User ID
-  const { email, password } = req.body;
+  const { email, password } = req.body; // extract value from form
 // object new user
   const newUser = {
     id: userID,
@@ -116,8 +116,6 @@ app.post("/register", (req, res) => {
 
   // set userId cookie
   res.cookie("user_id", userID);
-  console.log(user);
-
   res.redirect("/urls");
 })
 
