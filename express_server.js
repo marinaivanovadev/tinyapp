@@ -6,16 +6,18 @@ const app = express();
 app.use(cookieParser());
 const PORT = 8080; // default port 8080
 
-
+// function to generate random string for URLs and User ID
 const generateRandomString = function() {
   let characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let shortUrl = '';
-
+  let randomString = '';
+  
   for (let i = 0; i < 6; i++) {
-    let randomString = Math.floor(Math.random() * characters.length);
-    shortUrl += characters[randomString];
+    let randomIndex = Math.floor(Math.random() * characters.length);
+    randomString += characters[randomIndex];
+    
   }
-  return shortUrl;
+  return randomString;
+
 };
 
 app.set("view engine", "ejs"); // for Use templating engine
@@ -99,6 +101,12 @@ app.get("/hello", (req, res) => {
 app.get("/register", (req, res) => {
   res.render("register");
   });
+
+app.post("/register", (req, res) => {
+  user[id] = newUser;
+  console.log(user)
+  res.redirect("/urls");
+})
 
 
 app.post("/urls", (req, res) => {
