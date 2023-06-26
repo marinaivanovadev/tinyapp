@@ -83,6 +83,10 @@ app.get("/hello", (req, res) => {
   res.send("<html> <body>Hello <b>World</b></body></html>\n"); // sending html
 });
 
+app.get("/register", (req, res) => {
+  res.render("register");
+  });
+
 
 app.post("/urls", (req, res) => {
   const shortUrl = generateRandomString(); //generate the random short  URL
