@@ -103,7 +103,11 @@ app.get("/register", (req, res) => {
   });
 
 app.post("/register", (req, res) => {
-  user[id] = newUser;
+  const userID = generateRandomString(); //generate the random User ID
+  const { email, password } = req.body;
+  users[randomUserIDid] = newUsers;
+  // set userId cookie
+  res.cookie("user_id", userID);
   console.log(user)
   res.redirect("/urls");
 })
