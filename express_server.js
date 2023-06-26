@@ -105,10 +105,19 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const userID = generateRandomString(); //generate the random User ID
   const { email, password } = req.body;
-  users[randomUserIDid] = newUsers;
+// object new user
+  const newUser = {
+    id: userID,
+    email,
+    password
+  };
+// add new user to database
+  users[userID] = newUser;
+
   // set userId cookie
   res.cookie("user_id", userID);
-  console.log(user)
+  console.log(user);
+
   res.redirect("/urls");
 })
 
