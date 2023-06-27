@@ -40,6 +40,8 @@ const users = {
   },
 };
 
+
+
 app.use(express.urlencoded({ extended: true})); // To make this data readable will translate, or parse the body
 
 app.get("/", (req, res) => {
@@ -49,18 +51,24 @@ app.get("/", (req, res) => {
 app.get("/urls.json", (req,res) => { // add routes
   res.json(urlDatabase);
 });
+
+
+
+
 // add a route for urls
 app.get("/urls", (req, res) => {
+  const user = users[req.cookies.user_id]; // retrieve the user object using user_id
   const templateVars  = { 
-    username: req.cookies["username"],
+    user: user,
     urls: urlDatabase,
   };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
+  const user = users[req.cookies.user_id];
   const templateVars  = { 
-    username: req.cookies["username"],
+    user: user,
     urls: urlDatabase,
   };
   res.render("urls_new", templateVars);
@@ -84,8 +92,9 @@ app.get("/u/:id", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
   const longURL = urlDatabase[id];
+  const user = users[req.cookies.user_id];
   const templateVars  = { 
-    username: req.cookies["username"],
+    user: user,
     id: id,
     longURL: longURL,
   };  
@@ -141,21 +150,32 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[id];
   res.redirect("/urls");
 });
-
+const findUserByEmail = (email) => {
+  for (const userID in users) {
+    const user = users[userID];
+    if (user.email === email) {
+      return user;
+    }
+  }
+  return null; // user not found
+}
 app.post("/login", (req, res) => {
-  const { username } = req.body;
+  const { email } = req.body;
 
+// find the user by email 
+
+const user = findUserByEmail(email);
+if (users) {
   // set the username cookie
-  res.cookie("username", username);
+  res.cookie("user_id", users.id);
+}
   // redirect back to /urls
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
-  const { username } = req.body;
-
   // clear cookie
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   // redirect back to /urls
   res.redirect("/urls");
 });
