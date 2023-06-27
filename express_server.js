@@ -19,6 +19,16 @@ const generateRandomString = function() {
   return randomString;
 
 };
+// find user by email
+const findUserByEmail = (email) => {
+  for (const userID in users) {
+    const user = users[userID];
+    if (user.email === email) {
+      return user;
+    }
+  }
+  return null; // user not found
+}
 
 app.set("view engine", "ejs"); // for Use templating engine
 
@@ -111,8 +121,6 @@ app.get("/register", (req, res) => {
   res.render("register");
   });
 
-
-
 app.post("/register", (req, res) => {
   const userID = generateRandomString(); //generate the random User ID
   const { email, password } = req.body; // extract value from form
@@ -170,26 +178,25 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-const findUserByEmail = (email) => {
-  for (const userID in users) {
-    const user = users[userID];
-    if (user.email === email) {
-      return user;
-    }
-  }
-  return null; // user not found
-}
+
 
 app.post("/login", (req, res) => {
   const { email } = req.body;
 // find the user by email 
-const user = findUserByEmail(email);
-if (users) {
-  // set the username cookie
-  res.cookie("user_id", users.id);
+
+ // check if email or password is empty
+if (!email) {
+  return res.status(400).send("Email cannot be empty");
 }
+const user = findUserByEmail(email);
+if (user) {
+  // set the username cookie
+  res.cookie("user_id", user.id);
   // redirect back to /urls
   res.redirect("/urls");
+} else {
+  return res.status(401).send("Invalid email or Please register");
+}
 });
 
 app.post("/logout", (req, res) => {
