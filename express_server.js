@@ -111,9 +111,23 @@ app.get("/register", (req, res) => {
   res.render("register");
   });
 
+
+
 app.post("/register", (req, res) => {
   const userID = generateRandomString(); //generate the random User ID
   const { email, password } = req.body; // extract value from form
+  
+  // check if email or password is empty
+    if (!email || !password) {
+    return res.status(400).send("Email and password cannot be empty");
+  }
+
+// check if email is already registered
+const oldUser = findUserByEmail(email);
+if (oldUser) {
+  return res.status(400).send("Email is already registered");
+}
+
 // object new user
   const newUser = {
     id: userID,
@@ -123,10 +137,14 @@ app.post("/register", (req, res) => {
 // add new user to database
   users[userID] = newUser;
 
+  
   // set userId cookie
   res.cookie("user_id", userID);
   res.redirect("/urls");
 })
+
+
+
 
 
 app.post("/urls", (req, res) => {
@@ -135,6 +153,7 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortUrl] = longURL; // save the key-value pair to urlDatabase
   res.redirect(`/urls/${shortUrl}`);// redirect to a new page with new shortURL
 });
+
 app.post("/urls/:id/edit", (req, res) => { // post updated URL
   
   const id = req.params.id;
@@ -150,6 +169,7 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[id];
   res.redirect("/urls");
 });
+
 const findUserByEmail = (email) => {
   for (const userID in users) {
     const user = users[userID];
@@ -159,11 +179,10 @@ const findUserByEmail = (email) => {
   }
   return null; // user not found
 }
+
 app.post("/login", (req, res) => {
   const { email } = req.body;
-
 // find the user by email 
-
 const user = findUserByEmail(email);
 if (users) {
   // set the username cookie
