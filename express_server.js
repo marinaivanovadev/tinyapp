@@ -195,7 +195,7 @@ if (!email || !password) {
 }
 const user = findUserByEmail(email);
 if (user && user.password === password) {
-  // set the username cookie
+  // set the user cookie
   res.cookie("user_id", user.id);
   // redirect back to /urls
   res.redirect("/urls");
