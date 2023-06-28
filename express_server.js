@@ -121,6 +121,11 @@ app.get("/register", (req, res) => {
   res.render("register");
   });
 
+  app.get("/login", (req, res) => {
+    res.render("login");
+    });
+
+
 app.post("/register", (req, res) => {
   const userID = generateRandomString(); //generate the random User ID
   const { email, password } = req.body; // extract value from form
