@@ -12,23 +12,24 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <!-- add ml-auto to align right -->
+      <div class="navbar-nav mr-auto"> 
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        
+      </div>
+      
+      <div class="navbar-nav">
         <% if (user) { %>
-          <span class="email">Logged in as: <%= user.email %></span>
-          <form method="POST" action="/logout">
+        <span class="email">Logged in as: <%= user.email %></span>
+        <form method="POST" action="/logout" class="ml-3"> <!-- for spacing-->
           <button type = "submit" class="btn btn-success btn btn-outline-secondary">Logout</button>
         </form>
-          
         <% } else { %>
-        <a class="nav-item nav-link" href="/login">Login</a>
-        <a class="nav-item nav-link" href="/register">Register</a>
+      <a class="nav-item nav-link" href="/login">Login</a>
+      <a class="nav-item nav-link" href="/register">Register</a>
+      <% } %>
 
-        <% } %>
-      </div>
     </div>
   </nav>
 </header>
