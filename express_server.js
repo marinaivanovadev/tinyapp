@@ -183,24 +183,24 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-
+//Update the Login Handler
 
 app.post("/login", (req, res) => {
-  const { email } = req.body;
-// find the user by email 
+  const { email, password } = req.body;
+// find the user by email - function on top 
 
  // check if email or password is empty
-if (!email) {
-  return res.status(400).send("Email cannot be empty");
+if (!email || !password) {
+  return res.status(403).send("Email and password cannot be empty");
 }
 const user = findUserByEmail(email);
-if (user) {
+if (user && user.password === password) {
   // set the username cookie
   res.cookie("user_id", user.id);
   // redirect back to /urls
   res.redirect("/urls");
 } else {
-  return res.status(401).send("Invalid email or Please register");
+  return res.status(403).send("Invalid email or Password");
 }
 });
 
@@ -208,7 +208,7 @@ app.post("/logout", (req, res) => {
   // clear cookie
   res.clearCookie("user_id");
   // redirect back to /urls
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 app.listen(PORT, () => {
