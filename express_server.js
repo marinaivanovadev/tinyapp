@@ -71,6 +71,10 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   const user = users[req.cookies.user_id];
+  // check if the user is already logged in
+  if (!user) {
+    return res.redirect("/login");
+  }
   const templateVars  = { 
     user: user,
     urls: urlDatabase,
@@ -157,6 +161,11 @@ if (oldUser) {
 })
 
 app.post("/urls", (req, res) => {
+  const user = users[req.cookies.user_id];
+  if (!user) {
+    return res.status(401).send("Only Registered Users Can Shorten URLs"); 
+  }
+
   const shortUrl = generateRandomString(); //generate the random short  URL
   const longURL = req.body.longURL; // get the long url from request
   urlDatabase[shortUrl] = longURL; // save the key-value pair to urlDatabase
