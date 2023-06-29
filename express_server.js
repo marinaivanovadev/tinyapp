@@ -85,13 +85,13 @@ app.get("/urls/new", (req, res) => {
 app.get("/u/:id", (req, res) => {
   const shortUrl = req.params.id; // extract short url from request
   const longURL = urlDatabase[shortUrl]; // get the long url 
-
+  
 // edge in short url not exist
-  if (longURL) {
-    res.redirect(longURL);
+  if (!longURL) {
+  return res.status(404).send("Short URL not found");
   } else {
-    res.status(404).send("Short URL not found");
-}
+    return res.redirect(longURL);
+  } 
 });
 
 // add a second route and template
