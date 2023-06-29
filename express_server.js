@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cookieParser = require('cookie-parser');
 
@@ -17,8 +16,8 @@ const generateRandomString = function() {
     
   }
   return randomString;
-
 };
+
 // find user by email
 const findUserByEmail = (email) => {
   for (const userID in users) {
@@ -50,8 +49,6 @@ const users = {
   },
 };
 
-
-
 app.use(express.urlencoded({ extended: true})); // To make this data readable will translate, or parse the body
 
 app.get("/", (req, res) => {
@@ -61,9 +58,6 @@ app.get("/", (req, res) => {
 app.get("/urls.json", (req,res) => { // add routes
   res.json(urlDatabase);
 });
-
-
-
 
 // add a route for urls
 app.get("/urls", (req, res) => {
@@ -88,7 +82,6 @@ app.get("/u/:id", (req, res) => {
   const shortUrl = req.params.id; // extract short url from request
   const longURL = urlDatabase[shortUrl]; // get the long url 
 
-
 // edge in short url not exist
   if (longURL) {
     res.redirect(longURL);
@@ -96,7 +89,6 @@ app.get("/u/:id", (req, res) => {
     res.status(404).send("Short URL not found");
 }
 });
-
 
 // add a second route and template
 app.get("/urls/:id", (req, res) => {
@@ -111,29 +103,36 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-
-
 app.get("/hello", (req, res) => {
   res.send("<html> <body>Hello <b>World</b></body></html>\n"); // sending html
 });
 
 app.get("/register", (req, res) => {
-  const user = findUserByEmail(req.cookies.user_email);
-  res.render("register", { user });
+  
+  const user = users[req.cookies.user_id];
+   // check if the user is already logged in
+  if (user) {
+  return res.redirect("/urls");
+  }
+  return res.render("register", { user });
   });
 
   app.get("/login", (req, res) => {
-  res.render("login", { user: req.user });
+    const user = users[req.cookies.user_id];
+    // check if the user is already logged in
+    if (user) {
+      return res.redirect("/urls");
+    }
+    return res.render("login", { user: req.user });
     });
 
 
 app.post("/register", (req, res) => {
   const userID = generateRandomString(); //generate the random User ID
   const { email, password } = req.body; // extract value from form
-  
   // check if email or password is empty
-    if (!email || !password) {
-    return res.status(400).send("Email and password cannot be empty");
+  if (!email || !password) {
+  return res.status(400).send("Email and password cannot be empty");
   }
 
 // check if email is already registered
@@ -157,10 +156,6 @@ if (oldUser) {
   res.redirect("/urls");
 })
 
-
-
-
-
 app.post("/urls", (req, res) => {
   const shortUrl = generateRandomString(); //generate the random short  URL
   const longURL = req.body.longURL; // get the long url from request
@@ -176,21 +171,18 @@ app.post("/urls/:id/edit", (req, res) => { // post updated URL
   res.redirect("/urls");
 });
 
-
 app.post("/urls/:id/delete", (req, res) => {
-  
   const id = req.params.id;
   delete urlDatabase[id];
   res.redirect("/urls");
 });
 
 //Update the Login Handler
-
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 // find the user by email - function on top 
 
- // check if email or password is empty
+// check if email or password is empty
 if (!email || !password) {
   return res.status(403).send("Email and password cannot be empty");
 }
