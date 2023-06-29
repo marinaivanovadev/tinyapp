@@ -112,23 +112,22 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  
   const user = users[req.cookies.user_id];
-   // check if the user is already logged in
+  // check if the user is already logged in
   if (user) {
   return res.redirect("/urls");
   }
   return res.render("register", { user });
-  });
+});
 
-  app.get("/login", (req, res) => {
-    const user = users[req.cookies.user_id];
-    // check if the user is already logged in
-    if (user) {
-      return res.redirect("/urls");
-    }
+app.get("/login", (req, res) => {
+  const user = users[req.cookies.user_id];
+// check if the user is already logged in
+  if (user) {
+    return res.redirect("/urls");
+  }
     return res.render("login", { user: req.user });
-    });
+  });
 
 
 app.post("/register", (req, res) => {
@@ -173,7 +172,6 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/edit", (req, res) => { // post updated URL
-  
   const id = req.params.id;
   const newlongURL = req.body.longURL; // get the updated Url from body
   urlDatabase[id] = newlongURL;
