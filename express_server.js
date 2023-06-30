@@ -4,11 +4,14 @@ const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 
 const app = express();
+
+
 app.use(cookieSession({
-  name: "session",
-  keys: ['key1'],
-  maxAge: 24 * 60 * 60 * 1000 // set the session expiration time
+  name: 'session',
+  keys: ['key12', 'key22'], // Replace with your secret key(s)
+  maxAge: 24 * 60 * 60 * 1000, // Set the session to expire in 24 hours
 }));
+
 const PORT = 8080; // default port 8080
 
 // function to generate random string for URLs and User ID
@@ -84,6 +87,7 @@ app.get("/urls.json", (req,res) => { // add routes
 // add a route for urls
 app.get("/urls", (req, res) => {
   // const user = users[req.cookies.user_id]; // retrieve the user object using user_id
+  
   const userId = req.session.user_id;
   const user = users[userId];
   if (!user) {
@@ -199,7 +203,7 @@ const hashedPassword = bcrypt.hashSync(password, 10); //use bcrypt to hash and s
 
   //console.log(users); check that passw no text
   // set userId cookie
-  res.session("user_id", userID);
+  req.session.user_id = userID;
   res.redirect("/urls");
 })
 
@@ -269,7 +273,7 @@ if (!email || !password) {
 const user = findUserByEmail(email);
 if (user && bcrypt.compareSync(password, user.password)) { // compare pass
   // set the user cookie
-  res.session("user_id", user.id);
+  req.session.user_id = user;
   // redirect back to /urls
   res.redirect("/urls");
 } else {
@@ -290,3 +294,5 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+console
