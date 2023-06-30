@@ -121,8 +121,18 @@ app.get("/u/:id", (req, res) => {
 // add a second route and template
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
-  const longURL = urlDatabase[id] ? urlDatabase[id].longURL : null;
+
   const user = users[req.cookies.user_id];
+  if (!user) {
+    return res.status(401).send("You need to be logged in to view this page");
+  }
+
+  if (!urlDatabase[id] || urlDatabase[id].userID !== user.id) {
+    return res.status(403).send("You do not have permission to access this URL");
+  }
+
+  const longURL = urlDatabase[id].longURL;
+
   const templateVars  = { 
     user,
     id,
