@@ -123,11 +123,15 @@ app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
 
   const user = users[req.cookies.user_id];
+  if (!urlDatabase[id]) {
+    return res.status(404).send("URL not found");
+  }
+
   if (!user) {
     return res.status(401).send("You need to be logged in to view this page");
   }
 
-  if (!urlDatabase[id] || urlDatabase[id].userID !== user.id) {
+  if (urlDatabase[id].userID !== user.id) {
     return res.status(403).send("You do not have permission to access this URL");
   }
 
