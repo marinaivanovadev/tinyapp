@@ -26,7 +26,7 @@ const generateRandomString = function() {
 };
 
 // find user by email
-const findUserByEmail = (email) => {
+const findUserByEmail = (email, users) => {
   for (const userID in users) {
     const user = users[userID];
     if (user.email === email) {
@@ -182,7 +182,7 @@ app.post("/register", (req, res) => {
   }
 
 // check if email is already registered
-const oldUser = findUserByEmail(email);
+const oldUser = findUserByEmail(email, users);
 if (oldUser) {
   return res.status(400).send("Email is already registered");
 }
@@ -267,13 +267,14 @@ app.post("/login", (req, res) => {
 if (!email || !password) {
   return res.status(403).send("Email and password cannot be empty");
 }
-const user = findUserByEmail(email);
+const user = findUserByEmail(email, users);
 if (user && bcrypt.compareSync(password, user.password)) { // compare pass
   // set the user cookie
   req.session.user_id = user.id;
   // redirect back to /urls
   res.redirect("/urls");
 } else {
+
   return res.status(403).send("Invalid email or Password");
 }
 });
