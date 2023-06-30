@@ -32,8 +32,14 @@ const findUserByEmail = (email) => {
 app.set("view engine", "ejs"); // for Use templating engine
 
 const urlDatabase = {
-  "b2xVn2": "http://lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL: "http://lighthouselabs.ca",
+    userID: "userRandomID"
+  }, 
+  "9sm5xK": {
+    longURL: "http://www.google.com",
+    userID: "user2RandomID"
+  } 
 };
 
 const users = {
@@ -83,8 +89,8 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
-  const shortUrl = req.params.id; // extract short url from request
-  const longURL = urlDatabase[shortUrl]; // get the long url 
+  const shortURL = req.params.id; // extract short url from request
+  const longURL = urlDatabase[shortURL].longURL; // get the long url 
   
 // edge in short url not exist
   if (!longURL) {
@@ -97,7 +103,7 @@ app.get("/u/:id", (req, res) => {
 // add a second route and template
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
-  const longURL = urlDatabase[id];
+  const longURL = urlDatabase[id].longURL;
   const user = users[req.cookies.user_id];
   const templateVars  = { 
     user: user,
@@ -165,10 +171,10 @@ app.post("/urls", (req, res) => {
     return res.status(401).send("Only Registered Users Can Shorten URLs"); 
   }
 
-  const shortUrl = generateRandomString(); //generate the random short  URL
+  const shortURL = generateRandomString(); //generate the random short  URL
   const longURL = req.body.longURL; // get the long url from request
-  urlDatabase[shortUrl] = longURL; // save the key-value pair to urlDatabase
-  res.redirect(`/urls/${shortUrl}`);// redirect to a new page with new shortURL
+  urlDatabase[shortURL] = longURL; // save the key-value pair to urlDatabase
+  res.redirect(`/urls/${shortURL}`);// redirect to a new page with new shortURL
 });
 
 app.post("/urls/:id/edit", (req, res) => { // post updated URL
