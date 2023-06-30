@@ -131,12 +131,10 @@ app.get("/urls/:id", (req, res) => {
     return res.status(403).send("You do not have permission to access this URL");
   }
 
-  const longURL = urlDatabase[id].longURL;
-
   const templateVars  = { 
     user,
     id,
-    longURL
+    longURL: urlDatabase[id].longURL,
   };  
   res.render("urls_show", templateVars);
 });
@@ -211,14 +209,38 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/edit", (req, res) => { // post updated URL
   const id = req.params.id;
   const newLongURL = req.body.longURL; // get the updated Url from body
-  if (urlDatabase[id]) {
-    urlDatabase[id].longURL = newLongURL;
+  const user = users[req.cookies.user_id];
+  if (!urlDatabase[id]) {
+    return res.status(404).send("URL not found");
   }
-  res.redirect("/urls");
+  if (!user) {
+    return res.status(401).send("You need to be logged in to perform this action");
+  }
+
+  if (urlDatabase[id].userID !== user.id) {
+    return res.status(403).send("You do not have permission to edit this URL");
+  }
+
+    urlDatabase[id].longURL = newLongURL;
+    res.redirect("/urls");
 });
 
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
+  const user = users[req.cookies.user_id];
+
+  if (!urlDatabase[id]) {
+    return res.status(404).send("URL not found");
+  }
+
+  if (!user) {
+    return res.status(401).send("You need to be logged in to perform this action");
+  }
+
+  if (urlDatabase[id].userID !== user.id) {
+    return res.status(403).send("You do not have permission to delete this URL");
+  }
+
   delete urlDatabase[id];
   res.redirect("/urls");
 });
