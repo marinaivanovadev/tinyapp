@@ -54,6 +54,16 @@ const users = {
     password: "dishwasher-funk",
   },
 };
+// function that retrn the URLS belomging to user
+const urlsForUser = function(id) {
+  const userUrls = {};
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      userUrls[shortURL] = urlDatabase[shortURL];
+    }
+  }
+  return userUrls;
+};
 
 app.use(express.urlencoded({ extended: true})); // To make this data readable will translate, or parse the body
 
@@ -67,10 +77,18 @@ app.get("/urls.json", (req,res) => { // add routes
 
 // add a route for urls
 app.get("/urls", (req, res) => {
-  const user = users[req.cookies.user_id]; // retrieve the user object using user_id
-  const templateVars  = { 
-    user: user,
-    urls: urlDatabase,
+  // const user = users[req.cookies.user_id]; // retrieve the user object using user_id
+  const userId = req.cookies.user_id;
+  const user = users[userId];
+  if (!user) {
+    return res.redirect("/login");
+  }
+  
+  const userUrls = urlsForUser(userId);
+
+    const templateVars  = { 
+    user,
+    urls: userUrls,
   };
   res.render("urls_index", templateVars);
 });
@@ -82,7 +100,7 @@ app.get("/urls/new", (req, res) => {
     return res.redirect("/login");
   }
   const templateVars  = { 
-    user: user,
+    user,
     urls: urlDatabase,
   };
   res.render("urls_new", templateVars);
@@ -90,7 +108,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/u/:id", (req, res) => {
   const shortURL = req.params.id; // extract short url from request
-  const longURL = urlDatabase[shortURL].longURL; // get the long url 
+  const longURL = urlDatabase[shortURL] ? urlDatabase[shortURL].longURL : null;; // get the long url 
   
 // edge in short url not exist
   if (!longURL) {
@@ -103,12 +121,12 @@ app.get("/u/:id", (req, res) => {
 // add a second route and template
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
-  const longURL = urlDatabase[id].longURL;
+  const longURL = urlDatabase[id] ? urlDatabase[id].longURL : null;
   const user = users[req.cookies.user_id];
   const templateVars  = { 
-    user: user,
-    id: id,
-    longURL: longURL,
+    user,
+    id,
+    longURL
   };  
   res.render("urls_show", templateVars);
 });
@@ -173,14 +191,19 @@ app.post("/urls", (req, res) => {
 
   const shortURL = generateRandomString(); //generate the random short  URL
   const longURL = req.body.longURL; // get the long url from request
-  urlDatabase[shortURL] = longURL; // save the key-value pair to urlDatabase
+  urlDatabase[shortURL] = {
+    longURL,
+    userID: user.id
+   }; // save the key-value pair to urlDatabase
   res.redirect(`/urls/${shortURL}`);// redirect to a new page with new shortURL
 });
 
 app.post("/urls/:id/edit", (req, res) => { // post updated URL
   const id = req.params.id;
-  const newlongURL = req.body.longURL; // get the updated Url from body
-  urlDatabase[id] = newlongURL;
+  const newLongURL = req.body.longURL; // get the updated Url from body
+  if (urlDatabase[id]) {
+    urlDatabase[id].longURL = newLongURL;
+  }
   res.redirect("/urls");
 });
 
