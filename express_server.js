@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieSession = require('cookie-session'); 
+const { findUserByEmail } = require('./helpers');
 //const cookieParser = require('cookie-parser');
 const bcrypt = require("bcryptjs");
 
@@ -25,16 +26,7 @@ const generateRandomString = function() {
   return randomString;
 };
 
-// find user by email
-const findUserByEmail = (email, users) => {
-  for (const userID in users) {
-    const user = users[userID];
-    if (user.email === email) {
-      return user;
-    }
-  }
-  return null; // user not found
-}
+
 
 app.set("view engine", "ejs"); // for Use templating engine
 
