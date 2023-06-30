@@ -181,7 +181,7 @@ if (oldUser) {
   return res.status(400).send("Email is already registered");
 }
 
-const hashedPassword = bcrypt.hashSync(password, 10);
+const hashedPassword = bcrypt.hashSync(password, 10); //use bcrypt to hash and save password
 
 // object new user
   const newUser = {
@@ -192,7 +192,7 @@ const hashedPassword = bcrypt.hashSync(password, 10);
 // add new user to database
   users[userID] = newUser;
 
-  
+  //console.log(users); check that passw no text
   // set userId cookie
   res.cookie("user_id", userID);
   res.redirect("/urls");
