@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
+const bcrypt = require("bcryptjs");
 
 const app = express();
 app.use(cookieParser());
@@ -180,11 +181,13 @@ if (oldUser) {
   return res.status(400).send("Email is already registered");
 }
 
+const hashedPassword = bcrypt.hashSync(password, 10);
+
 // object new user
   const newUser = {
     id: userID,
     email,
-    password
+    password: hashedPassword, //save the password
   };
 // add new user to database
   users[userID] = newUser;
@@ -259,7 +262,7 @@ if (!email || !password) {
   return res.status(403).send("Email and password cannot be empty");
 }
 const user = findUserByEmail(email);
-if (user && user.password === password) {
+if (user && bcrypt.compareSync(password, user.password)) { // compare pass
   // set the user cookie
   res.cookie("user_id", user.id);
   // redirect back to /urls
