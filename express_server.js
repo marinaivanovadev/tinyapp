@@ -1,9 +1,14 @@
 const express = require("express");
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 
 const app = express();
-app.use(cookieParser());
+app.use(cookieSession({
+  name: "session",
+  keys: ['key1'],
+  maxAge: 24 * 60 * 60 * 1000 // set the session expiration time
+}));
 const PORT = 8080; // default port 8080
 
 // function to generate random string for URLs and User ID
@@ -79,7 +84,7 @@ app.get("/urls.json", (req,res) => { // add routes
 // add a route for urls
 app.get("/urls", (req, res) => {
   // const user = users[req.cookies.user_id]; // retrieve the user object using user_id
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   const user = users[userId];
   if (!user) {
     return res.redirect("/login");
@@ -95,7 +100,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const user = users[req.cookies.user_id];
+  const user = users[req.session.user_id];
   // check if the user is already logged in
   if (!user) {
     return res.redirect("/login");
@@ -123,7 +128,7 @@ app.get("/u/:id", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
 
-  const user = users[req.cookies.user_id];
+  const user = users[req.session.user_id];
   if (!urlDatabase[id]) {
     return res.status(404).send("URL not found");
   }
@@ -149,7 +154,7 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  const user = users[req.cookies.user_id];
+  const user = users[req.session.user_id];
   // check if the user is already logged in
   if (user) {
   return res.redirect("/urls");
@@ -158,7 +163,7 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  const user = users[req.cookies.user_id];
+  const user = users[req.session.user_id];
 // check if the user is already logged in
   if (user) {
     return res.redirect("/urls");
@@ -194,12 +199,12 @@ const hashedPassword = bcrypt.hashSync(password, 10); //use bcrypt to hash and s
 
   //console.log(users); check that passw no text
   // set userId cookie
-  res.cookie("user_id", userID);
+  res.session("user_id", userID);
   res.redirect("/urls");
 })
 
 app.post("/urls", (req, res) => {
-  const user = users[req.cookies.user_id];
+  const user = users[req.session.user_id];
   if (!user) {
     return res.status(401).send("Only Registered Users Can Shorten URLs"); 
   }
@@ -216,7 +221,7 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/edit", (req, res) => { // post updated URL
   const id = req.params.id;
   const newLongURL = req.body.longURL; // get the updated Url from body
-  const user = users[req.cookies.user_id];
+  const user = users[req.session.user_id];
   if (!urlDatabase[id]) {
     return res.status(404).send("URL not found");
   }
@@ -234,7 +239,7 @@ app.post("/urls/:id/edit", (req, res) => { // post updated URL
 
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
-  const user = users[req.cookies.user_id];
+  const user = users[req.session.user_id];
 
   if (!urlDatabase[id]) {
     return res.status(404).send("URL not found");
@@ -264,7 +269,7 @@ if (!email || !password) {
 const user = findUserByEmail(email);
 if (user && bcrypt.compareSync(password, user.password)) { // compare pass
   // set the user cookie
-  res.cookie("user_id", user.id);
+  res.session("user_id", user.id);
   // redirect back to /urls
   res.redirect("/urls");
 } else {
@@ -274,7 +279,10 @@ if (user && bcrypt.compareSync(password, user.password)) { // compare pass
 
 app.post("/logout", (req, res) => {
   // clear cookie
-  res.clearCookie("user_id");
+  // res.clearCookie("user_id");
+  // clear the session data
+  req.session = null;
+
   // redirect back to /urls
   res.redirect("/login");
 });
