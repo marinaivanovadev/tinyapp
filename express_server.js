@@ -12,10 +12,6 @@ app.use(cookieSession({
 
 const PORT = 8080; // default port 8080
 
-
-
-
-
 app.set("view engine", "ejs"); // for Use templating engine
 
 const urlDatabase = {
@@ -41,6 +37,7 @@ const users = {
     password: "dishwasher-funk",
   },
 };
+
 // function that retrn the URLS belomging to user
 const urlsForUser = function(id) {
   const userUrls = {};
@@ -64,16 +61,16 @@ app.get("/urls.json", (req,res) => { // add routes
 
 // add a route for urls
 app.get("/urls", (req, res) => {
-  // const user = users[req.cookies.user_id]; // retrieve the user object using user_id
   const userId = req.session.user_id;
   const user = users[userId];
+  
   if (!user) {
     return res.redirect("/login");
   }
   
   const userUrls = urlsForUser(userId);
 
-    const templateVars  = { 
+  const templateVars  = {
     user,
     urls: userUrls,
   };
@@ -82,10 +79,12 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   const user = users[req.session.user_id];
+
   // check if the user is already logged in
   if (!user) {
     return res.redirect("/login");
   }
+
   const templateVars  = { 
     user,
     urls: urlDatabase,
@@ -136,6 +135,7 @@ app.get("/hello", (req, res) => {
 
 app.get("/register", (req, res) => {
   const user = users[req.session.user_id];
+
   // check if the user is already logged in
   if (user) {
   return res.redirect("/urls");
@@ -145,6 +145,7 @@ app.get("/register", (req, res) => {
 
 app.get("/login", (req, res) => {
   const user = users[req.session.user_id];
+
 // check if the user is already logged in
   if (user) {
     return res.redirect("/urls");
@@ -156,6 +157,7 @@ app.get("/login", (req, res) => {
 app.post("/register", (req, res) => {
   const userID = generateRandomString(); //generate the random User ID
   const { email, password } = req.body; // extract value from form
+
   // check if email or password is empty
   if (!email || !password) {
   return res.status(400).send("Email and password cannot be empty");
@@ -175,11 +177,11 @@ const hashedPassword = bcrypt.hashSync(password, 10);
     email,
     password: hashedPassword, //save the password
   };
+
 // add new user to database
   users[userID] = newUser;
 
-  
-  // set userId cookie
+// set userId cookie
   req.session.user_id = userID;
   res.redirect("/urls");
 })
@@ -252,7 +254,7 @@ app.post("/urls/:id/delete", (req, res) => {
 //Update the Login Handler
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-// find the user by email - function on top 
+
 
 // check if email or password is empty
 if (!email || !password) {
