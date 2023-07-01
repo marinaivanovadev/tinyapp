@@ -1,30 +1,18 @@
 const express = require("express");
 const cookieSession = require('cookie-session'); 
 const { findUserByEmail } = require('./helpers');
-//const cookieParser = require('cookie-parser');
+const { generateRandomString } = require('./helpers');
 const bcrypt = require("bcryptjs");
 
 const app = express();
-//app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
-  keys: ['your-secret-key'], // Replace with your own secret key(s)
+  keys: ['your-secret-key'],
 }));
 
 const PORT = 8080; // default port 8080
 
-// function to generate random string for URLs and User ID
-const generateRandomString = function() {
-  let characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let randomString = '';
-  
-  for (let i = 0; i < 6; i++) {
-    let randomIndex = Math.floor(Math.random() * characters.length);
-    randomString += characters[randomIndex];
-    
-  }
-  return randomString;
-};
+
 
 
 

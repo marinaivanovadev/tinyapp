@@ -8,4 +8,18 @@ const findUserByEmail = (email, users) => {
   }
   return undefined; // user not found
 };
-module.exports = { findUserByEmail }
+
+// function to generate random string for URLs and User ID
+const generateRandomString = function() {
+  let characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let randomString = '';
+  
+  for (let i = 0; i < 6; i++) {
+    let randomIndex = Math.floor(Math.random() * characters.length);
+    randomString += characters[randomIndex];
+    
+  }
+  return randomString;
+};
+
+module.exports = { findUserByEmail, generateRandomString }
