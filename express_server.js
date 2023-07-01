@@ -210,6 +210,17 @@ app.post("/urls", (req, res) => {
    }; // save the key-value pair to urlDatabase
   res.redirect(`/urls/${shortURL}`);// redirect to a new page with new shortURL
 });
+//add post urls/id
+app.post("/urls/:id", (req, res) => {
+  const id = req.params.id;
+  const newLongURL = req.body.longURL;
+  if (!urlDatabase[id]) {
+    return res.status(404).send("URL not found");
+  }
+  urlDatabase[id].longURL = newLongURL;
+  res.redirect("/urls");
+});
+
 
 app.post("/urls/:id/edit", (req, res) => { // post updated URL
   const id = req.params.id;
